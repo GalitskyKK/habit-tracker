@@ -38,6 +38,19 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
+  // Блокировка скролла при открытии модалки
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
+
   // Определяем диапазон дат для привычки
   const today = new Date();
   const habitStartDate = new Date(habit.createdAt);
@@ -94,7 +107,7 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
     totalDaysInRange > 0 ? Math.round((completedInRange / totalDaysInRange) * 100) : 0;
 
   return (
-    <Modal isOpen={open} onClose={onClose} title={`История привычки: ${habit.name}`}>
+    <Modal isOpen={open} onClose={onClose} title={`Habit: ${habit.name}`}>
       <div className="p-4 w-full h-full flex flex-col">
         {/* Статистика */}
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
@@ -196,31 +209,96 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
               },
             }}
             modifiersClassNames={{
-              completed: 'bg-green-500 text-white font-bold hover:bg-green-600 cursor-pointer',
-              notCompleted:
-                'bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer border border-red-300',
-              today: 'ring-2 ring-blue-400',
-              futureHabit: 'bg-gray-100 text-gray-600 border border-gray-300',
+              completed: 'relative hover:bg-gray-50 cursor-pointer',
+              notCompleted: 'relative hover:bg-gray-50 cursor-pointer',
+              today: 'relative hover:bg-gray-50 cursor-pointer',
+              futureHabit: 'relative hover:bg-gray-50 cursor-pointer',
               afterHabit: 'text-gray-200 cursor-not-allowed opacity-30',
               beforeHabit: 'text-gray-200 cursor-not-allowed opacity-30',
               editable: 'cursor-pointer hover:bg-gray-50',
             }}
             modifiersStyles={{
               completed: {
-                backgroundColor: habit.color,
-                color: 'white',
+                position: 'relative',
               },
               futureHabit: {
-                backgroundColor: '#f3f4f6',
-                border: '1px dashed #9ca3af',
+                position: 'relative',
               },
             }}
             className="rounded-lg border w-full max-w-2xl"
+            components={{
+              DayButton: (props) => {
+                const dateStr = formatDateToString(props.day.date);
+                const isCompleted = completedDatesSet.has(dateStr);
+                const isAvailable = editableDatesSet.has(dateStr);
+                const isToday = dateStr === todayStr;
+                const isInHabitRange = allHabitDatesSet.has(dateStr);
+                const isFuture = dateStr > todayStr;
+                const isAfterEnd = dateStr > habitEndStr;
+                const isBeforeStart = dateStr < habitStartStr;
+
+                let circleBg = 'transparent';
+                let circleBorder = '1px solid #e5e7eb';
+                let circleTextColor = '#6b7280';
+                let circleSize = 'w-6 h-6';
+
+                if (isCompleted && isInHabitRange) {
+                  circleBg = habit.color;
+                  circleBorder = `1px solid ${habit.color}`;
+                  circleTextColor = 'white';
+                  circleSize = 'w-6 h-6';
+                } else if (isAvailable && !isCompleted) {
+                  circleBg = '#fef2f2';
+                  circleBorder = '1px solid #fecaca';
+                  circleTextColor = '#dc2626';
+                  circleSize = 'w-6 h-6';
+                } else if (isFuture && isInHabitRange) {
+                  circleBg = '#f3f4f6';
+                  circleBorder = '1px dashed #9ca3af';
+                  circleTextColor = '#6b7280';
+                  circleSize = 'w-6 h-6';
+                } else if (isAfterEnd || isBeforeStart) {
+                  circleBg = 'transparent';
+                  circleBorder = '1px solid #e5e7eb';
+                  circleTextColor = '#d1d5db';
+                  circleSize = 'w-6 h-6';
+                }
+
+                return (
+                  <button
+                    {...props}
+                    onClick={isAvailable ? () => handleDayClick(props.day.date) : undefined}
+                    disabled={!isAvailable}
+                    className={`w-full h-full p-1 flex items-center justify-center transition-all duration-200 hover:bg-gray-50 ${
+                      isToday ? 'ring-2 ring-blue-400 ring-offset-1' : ''
+                    }`}
+                    title={
+                      isToday
+                        ? 'Today'
+                        : isCompleted
+                        ? 'Completed'
+                        : isAvailable
+                        ? 'Not completed'
+                        : 'Unavailable'
+                    }>
+                    <div
+                      className={`${circleSize} rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 transform hover:scale-110`}
+                      style={{
+                        backgroundColor: circleBg,
+                        border: circleBorder,
+                        color: circleTextColor,
+                      }}>
+                      {props.day.date.getDate()}
+                    </div>
+                  </button>
+                );
+              },
+            }}
           />
         </div>
 
         {/* Легенда */}
-        <div className="flex gap-3 items-center justify-center text-xs mb-4 mt-4 flex-wrap">
+        <div className="flex gap-3 items-center justify-center text-xs mb-4 mt-4 flex-wrap max-[370px]:hidden">
           <div className="flex items-center gap-1">
             <span
               className="w-4 h-4 rounded inline-block"
@@ -246,7 +324,7 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
         </div>
 
         {/* Подсказка */}
-        <div className="text-center text-sm text-gray-600 mb-4">
+        <div className="text-center text-sm text-gray-600 mb-4 max-[370px]:hidden">
           <p>✨ Click on a day to change its status</p>
           <p className="text-xs mt-1">
             Editable days from {habitStartStr} to {formatDateToString(editableEndDate)}
@@ -256,7 +334,7 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
         {/* Кнопка закрытия */}
         <button
           onClick={onClose}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors max-[370px]:mt-4">
           Close
         </button>
       </div>
