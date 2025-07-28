@@ -94,7 +94,7 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
     totalDaysInRange > 0 ? Math.round((completedInRange / totalDaysInRange) * 100) : 0;
 
   return (
-    <Modal isOpen={open} onClose={onClose} title={`История привычки: ${habit.name}`}>
+    <Modal isOpen={open} onClose={onClose} title={`Habit information: ${habit.name}`}>
       <div className="p-4 w-full h-full flex flex-col">
         {/* Статистика */}
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
@@ -246,7 +246,7 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
         </div>
 
         {/* Подсказка */}
-        <div className="text-center text-sm text-gray-600 mb-4">
+        <div className="text-center text-sm text-gray-600 mb-4 max-[370px]:hidden">
           <p>✨ Click on a day to change its status</p>
           <p className="text-xs mt-1">
             Editable days from {habitStartStr} to {formatDateToString(editableEndDate)}
