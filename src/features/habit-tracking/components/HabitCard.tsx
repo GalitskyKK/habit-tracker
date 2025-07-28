@@ -1,9 +1,19 @@
-import { CheckCircle2, Circle, Flame, Percent, Target, Trash2 } from 'lucide-react';
+import {
+  Calendar,
+  CheckCircle2,
+  Circle,
+  Flame,
+  Percent,
+  Target,
+  Trash2,
+} from 'lucide-react';
 
 import { Progress } from '@/shared/ui/Progress';
 import type { Habit, HabitRecord } from '@/entities/habit/types';
 import { formatDate, getDateRange, getDayName } from '@/shared/utils/date';
 import { Card } from '@/shared/ui/Card';
+import { HabitHistoryModal } from './HabitHistoryModal';
+import React, { useState } from 'react';
 
 export const HabitCard: React.FC<{
   habit: Habit;
@@ -12,6 +22,7 @@ export const HabitCard: React.FC<{
   onToggle: (habitId: string, date: string) => void;
   onDelete: (id: string) => void;
 }> = ({ habit, records, streak, onToggle, onDelete }) => {
+  const [historyOpen, setHistoryOpen] = useState(false);
   const dates = getDateRange(7);
   const today = formatDate(new Date());
 
@@ -34,6 +45,14 @@ export const HabitCard: React.FC<{
         </div>
         <button onClick={() => onDelete(habit.id)} className="text-gray-400 hover:text-red-500 p-1">
           <Trash2 size={16} />
+        </button>
+      </div>
+
+      <div className="flex items-center gap-2 mb-3">
+        <button
+          onClick={() => setHistoryOpen(true)}
+          className="ml-auto text-gray-500 hover:underline text-sm">
+          <Calendar size={18} />
         </button>
       </div>
 
@@ -82,6 +101,13 @@ export const HabitCard: React.FC<{
           );
         })}
       </div>
+      <HabitHistoryModal
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        habit={habit}
+        records={records}
+        onToggle={onToggle}
+      />
     </Card>
   );
 };

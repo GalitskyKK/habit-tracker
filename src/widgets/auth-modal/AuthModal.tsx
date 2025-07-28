@@ -43,12 +43,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={isRegister ? 'Регистрация' : 'Вход'}>
+    <Modal isOpen={isOpen} onClose={handleClose} title={isRegister ? 'Sign in' : 'Log in'}>
       <form onSubmit={handleAuth} className="space-y-4">
         <Input type="email" placeholder="Email" value={email} onChange={setEmail} required />
         <Input
           type="password"
-          placeholder="Пароль"
+          placeholder="Password"
           value={password}
           onChange={setPassword}
           required
@@ -58,7 +58,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           type="submit"
           disabled={pending}
           className="w-full inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 px-4 py-2 text-base">
-          {pending ? 'Загрузка...' : isRegister ? 'Зарегистрироваться' : 'Войти'}
+          {pending ? 'loading...' : isRegister ? 'Sign in' : 'Log in'}
         </button>
         <div className="flex items-center my-2">
           <div className="flex-grow h-px bg-gray-300" />
@@ -77,7 +77,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         <div className="text-center text-sm">
           {isRegister ? (
             <>
-              Уже есть аккаунт?{' '}
+              Already have an account?{' '}
               <button
                 type="button"
                 className="text-blue-600 underline"
@@ -87,7 +87,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </>
           ) : (
             <>
-              Нет аккаунта?{' '}
+              No account?{' '}
               <button
                 type="button"
                 className="text-blue-600 underline"

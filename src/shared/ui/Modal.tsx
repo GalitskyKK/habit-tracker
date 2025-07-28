@@ -3,7 +3,7 @@ export const Modal: React.FC<{
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-}> = ({ isOpen, onClose, title, children }) => {
+}> = ({ isOpen, title, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -11,9 +11,9 @@ export const Modal: React.FC<{
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{title}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl">
+          {/* <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl">
             ×
-          </button>
+          </button> */}
         </div>
         {children}
       </div>
