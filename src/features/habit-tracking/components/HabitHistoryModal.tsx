@@ -325,7 +325,6 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
 
         {/* Подсказка */}
         <div className="text-center text-sm text-gray-600 mb-4 max-[370px]:hidden">
-        <div className="text-center text-sm text-gray-600 mb-4 max-[370px]:hidden">
           <p>✨ Click on a day to change its status</p>
           <p className="text-xs mt-1">
             Editable days from {habitStartStr} to {formatDateToString(editableEndDate)}
