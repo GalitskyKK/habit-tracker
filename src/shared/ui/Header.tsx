@@ -11,7 +11,7 @@ export interface HeaderProps {
   signOut: () => Promise<void>;
 }
 
-export const Header: React.FC<HeaderProps> = ({ setShowAuth, user, loading, signOut }) => {
+export const Header: React.FC<HeaderProps> = ({ user, loading, signOut }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({ setShowAuth, user, loading, sign
   }, [open]);
 
   return (
-    <header className="fixed top-2 left-1/2 transform -translate-x-1/2 z-50 shadow/5 rounded-sm px-9 bg-white/80 backdrop-blur-md w-3/4">
+    <header className="fixed top-2 left-1/2 transform -translate-x-1/2 z-50 shadow/5 rounded-sm px-9 bg-white/80 backdrop-blur-md md:w-3/4">
       <div className="flex justify-between p-2 max-w-[1672px] items-center">
         <Link to="/">
           <div className="text-4xl font-semibold text-gray-300 p-1 rounded-sm hover:text-gray-500 duration-1000">
@@ -62,9 +62,7 @@ export const Header: React.FC<HeaderProps> = ({ setShowAuth, user, loading, sign
               </div>
             )}
           </div>
-        ) : (
-          <Button onClick={() => setShowAuth(true)}>Log in / Sign in</Button>
-        )}
+        ) : null}
       </div>
     </header>
   );
