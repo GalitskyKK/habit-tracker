@@ -124,12 +124,12 @@ export const HabitCard: React.FC<HabitCardProps> = React.memo(
           <div className="text-xs text-gray-500 transition-opacity duration-300">
             {visibleWeek.length > 0 && (
               <>
-                {new Date(visibleWeek[0]).toLocaleDateString('ru-RU', {
+                {new Date(visibleWeek[0]).toLocaleDateString('en-US', {
                   day: 'numeric',
                   month: 'short',
                 })}{' '}
                 —
-                {new Date(visibleWeek[visibleWeek.length - 1]).toLocaleDateString('ru-RU', {
+                {new Date(visibleWeek[visibleWeek.length - 1]).toLocaleDateString('en-US', {
                   day: 'numeric',
                   month: 'short',
                 })}
