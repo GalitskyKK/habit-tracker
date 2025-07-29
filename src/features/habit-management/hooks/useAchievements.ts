@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/shared/hooks/useAuth';
-import type { Achievement } from '@/entities/habit/types';
+import type { Achievement, AchievementMeta, AchievementConfig } from '@/entities/habit/types';
 import toast from 'react-hot-toast';
 
 export const useAchievements = () => {
@@ -36,7 +36,7 @@ export const useAchievements = () => {
 
   // Создать достижение, если его ещё нет, и показать тост
   const createAchievement = useCallback(
-    async (type: string, meta?: any) => {
+    async (type: string, meta?: AchievementMeta) => {
       if (!user) return;
       // Проверить, есть ли уже такое достижение
       const existing = await getAchievementByType(type);
@@ -62,7 +62,7 @@ export const useAchievements = () => {
   };
 };
 
-export const ACHIEVEMENTS = [
+export const ACHIEVEMENTS: AchievementConfig[] = [
   { type: 'first_habit', title: 'First Habit', description: 'Create your first habit' },
   { type: 'first_checkin', title: 'First Check-in', description: 'Complete your first habit day' },
   { type: 'streak_3', title: '3-Day Streak', description: 'Maintain a 3-day streak on any habit' },

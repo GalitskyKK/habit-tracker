@@ -4,7 +4,7 @@ import { Input } from '../../../shared/ui/Input';
 import { Button } from '../../../shared/ui/Button';
 
 export const HabitForm: React.FC<{
-  onSubmit: (habit: Omit<Habit, 'id' | 'createdAt'>) => void;
+  onSubmit: (habit: Omit<Habit, 'id'>) => void;
   onCancel: () => void;
 }> = ({ onSubmit, onCancel }) => {
   const [name, setName] = useState('');
@@ -31,6 +31,7 @@ export const HabitForm: React.FC<{
       description: description.trim(),
       color,
       targetDays,
+      createdAt: new Date().toISOString(),
     });
 
     setName('');

@@ -5,7 +5,18 @@ import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { useAchievements } from './useAchievements';
 
-export const useHabits = () => {
+interface UseHabitsResult {
+  habits: Habit[];
+  records: HabitRecord[];
+  addHabit: (habit: Omit<Habit, 'id'>) => Promise<void>;
+  deleteHabit: (id: string) => Promise<void>;
+  toggleHabit: (habitId: string, date: string) => Promise<void>;
+  getHabitStreak: (habitId: string) => number;
+  loading: boolean;
+  error: string | null;
+}
+
+export const useHabits: () => UseHabitsResult = () => {
   const { user } = useAuth();
   const { createAchievement } = useAchievements();
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -60,8 +71,8 @@ export const useHabits = () => {
   }, [user]);
 
   // Добавить привычку
-  const addHabit = useCallback(
-    async (habit: Omit<Habit, 'id' | 'createdAt'>) => {
+  const addHabit: (habit: Omit<Habit, 'id'>) => Promise<void> = useCallback(
+    async (habit) => {
       if (!user) return;
       const { data, error } = await supabase
         .from('habits')
@@ -71,6 +82,7 @@ export const useHabits = () => {
           description: habit.description,
           color: habit.color,
           target_days: habit.targetDays,
+          created_at: habit.createdAt, // используем локальную дату
         })
         .select()
         .single();
@@ -82,7 +94,7 @@ export const useHabits = () => {
             name: data.name,
             description: data.description,
             color: data.color,
-            createdAt: data.created_at,
+            createdAt: habit.createdAt, // используем локальную дату
             targetDays: data.target_days,
           },
         ]);
@@ -96,8 +108,8 @@ export const useHabits = () => {
   );
 
   // Удалить привычку и все её records
-  const deleteHabit = useCallback(
-    async (id: string) => {
+  const deleteHabit: (id: string) => Promise<void> = useCallback(
+    async (id) => {
       if (!user) return;
       await supabase.from('habits').delete().eq('id', id).eq('user_id', user.id);
       await supabase.from('records').delete().eq('habit_id', id).eq('user_id', user.id);
@@ -108,8 +120,8 @@ export const useHabits = () => {
   );
 
   // streak как раньше
-  const getHabitStreak = useCallback(
-    (habitId: string): number => {
+  const getHabitStreak: (habitId: string) => number = useCallback(
+    (habitId) => {
       const habitRecords = records
         .filter((r) => r.habitId === habitId && r.completed)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -131,8 +143,8 @@ export const useHabits = () => {
   );
 
   // Переключить выполнение привычки на дату
-  const toggleHabit = useCallback(
-    async (habitId: string, date: string) => {
+  const toggleHabit: (habitId: string, date: string) => Promise<void> = useCallback(
+    async (habitId, date) => {
       if (!user) return;
       const { data: existing } = await supabase
         .from('records')

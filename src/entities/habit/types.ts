@@ -18,5 +18,31 @@ export interface Achievement {
   user_id: string;
   type: string;
   date_earned: string;
-  meta?: any;
+  meta?: AchievementMeta;
+}
+
+export interface AchievementMeta {
+  [key: string]: unknown;
+}
+
+export interface AchievementConfig {
+  type: string;
+  title: string;
+  description: string;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name?: string;
+  avatarUrl?: string;
+}
+
+export interface AuthContextType {
+  user: AuthUser | null;
+  loading: boolean;
+  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signOut: () => Promise<void>;
+  signInWithGithub: () => Promise<void>;
 }
