@@ -2,7 +2,7 @@ import type { Habit } from '@/entities/habit/types';
 import { useHabits } from '@/features/habit-management/hooks/useHabits';
 import { Button } from '@/shared/ui/Button';
 import { formatDate } from '@/shared/utils/date';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { HabitStats } from '../habit-stats/HabitStats';
 import { Card } from '@/shared/ui/Card';
 import { Calendar, Plus } from 'lucide-react';
@@ -14,10 +14,27 @@ const HabitTracker: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const { habits, records, addHabit, deleteHabit, toggleHabit, getHabitStreak } = useHabits();
 
-  const handleAddHabit = (habitData: Omit<Habit, 'id' | 'createdAt'>) => {
-    addHabit(habitData);
-    setShowForm(false);
-  };
+  const handleAddHabit = useCallback(
+    (habitData: Omit<Habit, 'id'>) => {
+      addHabit(habitData);
+      setShowForm(false);
+    },
+    [addHabit],
+  );
+
+  const handleDeleteHabit = useCallback(
+    (id: string) => {
+      deleteHabit(id);
+    },
+    [deleteHabit],
+  );
+
+  const handleToggleHabit = useCallback(
+    (habitId: string, date: string) => {
+      toggleHabit(habitId, date);
+    },
+    [toggleHabit],
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -30,7 +47,9 @@ const HabitTracker: React.FC = () => {
                 {formatDate(new Date())} • {habits.length} active habits
               </p>
             </div>
-            <Button onClick={() => setShowForm(true)} className="flex items-center gap-2 font-semibold">
+            <Button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 font-semibold">
               <Plus size={20} />
               Habit
             </Button>
@@ -54,8 +73,8 @@ const HabitTracker: React.FC = () => {
               habits={habits}
               records={records}
               getHabitStreak={getHabitStreak}
-              onToggle={toggleHabit}
-              onDelete={deleteHabit}
+              onToggle={handleToggleHabit}
+              onDelete={handleDeleteHabit}
             />
           )}
         </div>

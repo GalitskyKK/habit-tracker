@@ -11,7 +11,7 @@ interface HabitListProps {
   onDelete: (habitId: string) => void;
 }
 
-export const HabitList: React.FC<HabitListProps> = ({
+const HabitListComponent: React.FC<HabitListProps> = ({
   habits,
   records,
   getHabitStreak,
@@ -24,7 +24,7 @@ export const HabitList: React.FC<HabitListProps> = ({
         <HabitCard
           key={habit.id}
           habit={habit}
-          records={records}
+          records={records.filter((r) => r.habitId === habit.id)}
           streak={getHabitStreak(habit.id)}
           onToggle={onToggle}
           onDelete={onDelete}
@@ -33,5 +33,7 @@ export const HabitList: React.FC<HabitListProps> = ({
     </div>
   );
 };
+
+export const HabitList = React.memo(HabitListComponent);
 
 export default HabitList;

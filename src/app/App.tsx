@@ -1,5 +1,5 @@
 import '@app/styles/index.css';
-import { AuthProvider } from '@/shared/hooks/useAuth';
+import { AuthProvider } from '@/shared/hooks/AuthProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { AppLayout } from '@/app/layouts/AppLayout';
 

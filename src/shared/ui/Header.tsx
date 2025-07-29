@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Avatar } from './Avatar';
 import { Button } from './Button';
 import { Link, useNavigate } from 'react-router-dom';
-import type { AuthUser } from '@/shared/hooks/useAuth';
+import type { AuthUser } from '@/entities/habit/types';
 
 export interface HeaderProps {
   setShowAuth: (v: boolean) => void;
